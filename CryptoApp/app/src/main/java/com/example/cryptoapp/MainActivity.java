@@ -1,9 +1,12 @@
 package com.example.cryptoapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +23,18 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // create a listener for the image button to go to Login Activity if logged out
+        // If logged in send to price of coin
+
+        ImageButton mainButton = (ImageButton) findViewById(R.id.main_button);
+        final Context context = this;
+        mainButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -40,10 +56,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-        else if(id == R.id.action_login){
-            Intent intent = new Intent(this,  LoginActivity.class);
-            startActivity(intent);
-        }
+
 
         return super.onOptionsItemSelected(item);
     }

@@ -7,11 +7,5 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_login"
-        android:icon="@drawable/ic_login"
-        android:orderInCategory="110"
-        android:title="Login"
-        app:showAsAction="always"
-        />
+    
 </menu>
