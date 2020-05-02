@@ -2,7 +2,9 @@ package com.example.cryptoapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,10 +13,12 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.RequestQueue;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +30,31 @@ public class MainActivity extends AppCompatActivity {
         // create a listener for the image button to go to Login Activity if logged out
         // If logged in send to price of coin
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("checkLogin", true);
+        editor.apply();
+
+//        final boolean checkLogin = preferences.getBoolean("checkLogin", true);
+//        preferences.edit().putBoolean("checkLogin", checkLogin).commit();
+        final boolean checkLogin = true;
+
         ImageButton mainButton = (ImageButton) findViewById(R.id.main_button);
         final Context context = this;
         mainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent intent = new Intent(context, LoginActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean checkLogin = sharedPreferences.getBoolean("checkLogin", true);
+
+                if(checkLogin){
+                    Intent goToBTC = new Intent(context, RecyclerViewActivity.class);
+                    startActivity(goToBTC);
+                }
+                else {
+                    Intent goToLogin = new Intent(context, LoginActivity.class);
+                    startActivity(goToLogin);
+                }
             }
         });
 
