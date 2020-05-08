@@ -7,3 +7,6 @@
 4. When logged in, start on portfolio
 5. Work with API to get Bitcoin pricing, chart and historical data
 6. Add preferences to settings 
+
+
+![](images/price_of_btc(resized).png)
