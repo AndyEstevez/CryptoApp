@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +25,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
@@ -46,9 +50,11 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
 
         queue = Volley.newRequestQueue(this);
-        String api = "PUT_YOUR_API_KEY_HERE"; // from https://www.coinapi.io/
+
+        String api = "PUT_API_KEY_HERE"; // from https://www.coinapi.io/
         String url_for_price = "https://rest.coinapi.io/v1/assets";
         String url_for_image = "https://rest.coinapi.io/v1/assets/icons/32";
+
         final TextView name = findViewById(R.id.name_of_coin);
         final TextView price = findViewById(R.id.price_of_coin);
         final ImageView image = findViewById(R.id.image_of_coin);
@@ -67,7 +73,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
                                 if(getBTC.equalsIgnoreCase("BTC")){
                                     JSONObject bitcoin = jsonArray.getJSONObject(i);
-
+                                    System.out.println(bitcoin.toString());
                                     double priceCoin = (Double.valueOf(bitcoin.getString("price_usd")));
                                     DecimalFormat changeDecimals = new DecimalFormat("##.00");
                                     System.out.println(priceCoin);
@@ -124,8 +130,13 @@ public class RecyclerViewActivity extends AppCompatActivity {
             }
         });
 
-
         queue.add(priceRequest);
         queue.add(imageRequest);
+
+    }
+
+    public void sendToChart(View view) {
+        Intent chart_holdings = new Intent(this, Chart_and_HoldingsActivity.class);
+        startActivity(chart_holdings);
     }
 }

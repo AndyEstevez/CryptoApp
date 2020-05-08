@@ -15,6 +15,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.RequestQueue;
 
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         // create a listener for the image button to go to Login Activity if logged out
         // If logged in send to price of coin

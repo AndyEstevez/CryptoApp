@@ -22,4 +22,9 @@
     <string name="password">Password:</string>
     <string name="email">Email:</string>
     <string name="sign_up"><u>Sign up?</u></string>
+    <string name="title_activity_chart_and__holdings">Chart_and_HoldingsActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="historical_price">Historical Price</string>
+    <string name="holdings">Holdings</string>
 </resources>
