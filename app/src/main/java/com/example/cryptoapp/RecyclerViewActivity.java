@@ -45,13 +45,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
 //        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 //        recyclerView.setLayoutManager(linearLayoutManager);
 
-
-
-
-
         queue = Volley.newRequestQueue(this);
 
-        String api = "PUT_API_KEY_HERE"; // from https://www.coinapi.io/
+        String api = "PUT-API-KEY-HERE"; // from https://www.coinapi.io/
         String url_for_price = "https://rest.coinapi.io/v1/assets";
         String url_for_image = "https://rest.coinapi.io/v1/assets/icons/32";
 

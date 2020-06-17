@@ -1,12 +1,11 @@
 package com.example.cryptoapp.ui.main;
 
-import android.content.Context;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,30 +19,31 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cryptoapp.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ChartFragment extends Fragment {
 
-    private String api = "PUT_API_KEY_HERE"; // from https://www.coinapi.io/
+    private String api = "PUT-API-KEY-HERE"; // from https://www.coinapi.io/
     private RequestQueue queue;
+    private long first_timestamp;
+    private Date date = new Date();
 
     ArrayList timeArr = new ArrayList<>();
     ArrayList<Double> priceArr = new ArrayList<Double>();
@@ -65,7 +65,6 @@ public class ChartFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
          View view = inflater.inflate(R.layout.fragment_chart, container, false);
 
-
         return view;
     }
 
@@ -78,19 +77,18 @@ public class ChartFragment extends Fragment {
 
         queue = Volley.newRequestQueue(context.getContext());
 
-        queue.add(findPrice());
-
+        try {
+            queue.add(findPrice(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 
-
-    public StringRequest findPrice(){
+    public StringRequest findPrice(Date date) throws ParseException {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-        final Date date = new Date();
-
-        System.out.println("Today's date is "+sdf.format(calendar.getTime()));
         String current_time = sdf.format(calendar.getTime());
         calendar.add(Calendar.DATE, -1);
 
@@ -98,8 +96,13 @@ public class ChartFragment extends Fragment {
         String full_url = url_for_historical_data + sdf.format(calendar.getTime()) + "&time_end=" + current_time + "&apikey=" + api;
         System.out.println(full_url);
 
+        // convert the time from 24 hours ago from zero minutes mark to unix time
+        first_timestamp = get24HoursAgoTime(sdf, calendar);
+
         final ArrayList<Double> price_Open = new ArrayList<Double>();
-        final ArrayList timeList = new ArrayList<>();
+        final ArrayList timestamps = new ArrayList<>();
+
+        timestamps.add(0);
 
         return new StringRequest(Request.Method.GET, full_url,
                 new Response.Listener<String>() {
@@ -115,41 +118,36 @@ public class ChartFragment extends Fragment {
                             Double price = tempJSONObject.getDouble("price_open");
                             String time = tempJSONObject.getString("time_period_start");
 
-                            String parsed_time = time.substring(0, 10) + " " + time.substring(11, 19);
-                            System.out.println("Parsed Time  = " + parsed_time);
+                            String parsed_time = time.substring(0, 10) + " " + time.substring(11, 16);
 
-
-                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            // change the date to unix time & subtract against the first hr in the 24hr time set
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                             Date date = df.parse(parsed_time);
                             long unix_time = date.getTime();
                             long final_time = unix_time / 1000;
-                            System.out.println("The Unix time :" + final_time);
+                            long timestamp = final_time - first_timestamp;
 
-                            String hour = time.substring(11, 13);
-                            String min = time.substring(14, 16);
-                            String actual_time = hour + "." + min;
-
-
-                          //  System.out.println("New time format: " + actual_time);
-                            timeList.add(actual_time);
+                            timestamps.add(timestamp);
                             price_Open.add(price);
 
                         }
-                        setTimeArr(timeList);
+                        setTimeArr(timestamps);
                         timeArr = (ArrayList) getTimeArr();
 
                         setPriceArr(price_Open);
                         priceArr = getPriceArr();
 
                         LineDataSet lineDataSet = new LineDataSet(values(), "Bitcoin");
-//                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//                        dataSets.add(lineDataSet);
-
                         LineData data = new LineData(lineDataSet);
                         priceChart.setData(data);
                         priceChart.invalidate();
 
-                    }   catch (JSONException | ParseException e) {
+
+                        // set the X-axis labels to time
+                        XAxis xAxis = priceChart.getXAxis();
+                        xAxis.setValueFormatter(new XValueFormatter(first_timestamp));
+
+                        }   catch (JSONException | ParseException e) {
                             e.printStackTrace();
                 }
             }
@@ -161,6 +159,37 @@ public class ChartFragment extends Fragment {
         });
     }
 
+    // Used to get the first unix time for the 24hrs timeline, which is used to subtract the hours that proceed it
+    private long get24HoursAgoTime(SimpleDateFormat sdf, Calendar calendar) throws ParseException {
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        String past_24time = sdf.format(calendar.getTime());
+        int yesterday_hour = Integer.parseInt(past_24time.substring(11, 13));
+        String actual_24hour_num = changeHour(yesterday_hour) + ":00";
+        String time = past_24time.substring(0, 10) + " " + actual_24hour_num;
+        Date d = sdf.parse(time);
+        long unix_time = d.getTime();
+        long final_time = unix_time / 1000;
+
+        return final_time;
+    }
+
+    // Used to change the 24 hrs ago specific hour to be increased by one to follow the same time as the api's past 24 hrs
+    private String changeHour(int yesterday_hour) {
+        int new_hour;
+
+        if(yesterday_hour < 23){
+            new_hour = yesterday_hour + 1;
+            return String.valueOf(new_hour);
+        }
+        else {
+            return String.valueOf(0);
+        }
+
+    }
+
+
+    // Creates data entries for the data set that will be plotted
     public ArrayList<Entry> values () {
         ArrayList<Entry> values = new ArrayList<Entry>();
         System.out.println(priceArr.size());
@@ -169,17 +198,15 @@ public class ChartFragment extends Fragment {
             double price_double = priceArr.get(i);
             float price = (float) price_double;
 
-            double time_double = Double.valueOf((String) timeArr.get(i));
-            float time = (float) time_double;
-           // System.out.println("Time value: " + time);
+            float time = Float.valueOf(timeArr.get(i).toString());
 
             values.add(new Entry(time, price));
-            //System.out.println("Values : "+ values.get(i));
         }
 
         return values;
     }
 
+    // getters and setters for arraylists
     public List getTimeArr(){
         return timeArr;
     }
@@ -195,4 +222,30 @@ public class ChartFragment extends Fragment {
         this.priceArr = arrayList;
     }
 
+
+    // Code used for this XValueFormatter class from https://github.com/PhilJay/MPAndroidChart/issues/789
+    // User: @Yasir-Ghunaim
+    class XValueFormatter extends ValueFormatter {
+        private long timestamp;
+        private Date mDate;
+        private DateFormat mDataFormat;
+
+        public XValueFormatter(long timestamp){
+            this.timestamp = first_timestamp;
+            this.mDate = date;
+            this.mDataFormat = new SimpleDateFormat("HH:mm");
+        }
+
+        // Change getFormattedValue() method to getAxisLabel since the old method is now deprecated
+        public String getAxisLabel(float value, AxisBase axis){
+            long convertedTimestamp = (long) value;
+            long og_timestamp = first_timestamp + convertedTimestamp;
+            return getHour(og_timestamp);
+        }
+        private String getHour(long timestamp){
+            mDate.setTime(timestamp*1000);
+            return mDataFormat.format(mDate);
+
+        }
+    }
 }
