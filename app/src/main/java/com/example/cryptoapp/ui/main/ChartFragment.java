@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class ChartFragment extends Fragment {
 
@@ -45,7 +44,7 @@ public class ChartFragment extends Fragment {
     private long first_timestamp;
     private Date date = new Date();
 
-    ArrayList timeArr = new ArrayList<>();
+    ArrayList timeArr;
     ArrayList<Double> priceArr = new ArrayList<Double>();
 
     public LineChart priceChart;
@@ -129,22 +128,26 @@ public class ChartFragment extends Fragment {
 
                             timestamps.add(timestamp);
                             price_Open.add(price);
-
                         }
                         setTimeArr(timestamps);
-                        timeArr = (ArrayList) getTimeArr();
+                        timeArr = getTimeArr();
+                        timeArr.remove(0); // repeats 0 twice for [0,1] indices
 
                         setPriceArr(price_Open);
                         priceArr = getPriceArr();
 
                         LineDataSet lineDataSet = new LineDataSet(values(), "Bitcoin");
+                        lineDataSet.setValueTextSize(12);
+                        lineDataSet.setLineWidth(3);
                         LineData data = new LineData(lineDataSet);
+
                         priceChart.setData(data);
                         priceChart.invalidate();
 
 
                         // set the X-axis labels to time
                         XAxis xAxis = priceChart.getXAxis();
+                        xAxis.setLabelCount(5, true);
                         xAxis.setValueFormatter(new XValueFormatter(first_timestamp));
 
                         }   catch (JSONException | ParseException e) {
@@ -192,14 +195,13 @@ public class ChartFragment extends Fragment {
     // Creates data entries for the data set that will be plotted
     public ArrayList<Entry> values () {
         ArrayList<Entry> values = new ArrayList<Entry>();
-        System.out.println(priceArr.size());
         for (int i = 0; i < priceArr.size(); i++){
 
             double price_double = priceArr.get(i);
             float price = (float) price_double;
 
-            float time = Float.valueOf(timeArr.get(i).toString());
-
+            float time = Float.parseFloat(timeArr.get(i).toString());
+            System.out.println("Values method, time = " + time);
             values.add(new Entry(time, price));
         }
 
@@ -207,7 +209,7 @@ public class ChartFragment extends Fragment {
     }
 
     // getters and setters for arraylists
-    public List getTimeArr(){
+    public ArrayList getTimeArr(){
         return timeArr;
     }
 
@@ -231,9 +233,9 @@ public class ChartFragment extends Fragment {
         private DateFormat mDataFormat;
 
         public XValueFormatter(long timestamp){
-            this.timestamp = first_timestamp;
+            this.timestamp = timestamp;
             this.mDate = date;
-            this.mDataFormat = new SimpleDateFormat("HH:mm");
+            this.mDataFormat = new SimpleDateFormat("MM-dd HH:mm");
         }
 
         // Change getFormattedValue() method to getAxisLabel since the old method is now deprecated
