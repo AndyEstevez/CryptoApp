@@ -35,6 +35,8 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,17 +48,23 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
 
     private String api = "PUT-API-KEY-HERE"; // from https://www.coinapi.io/
     private RequestQueue queue;
-    private long first_timestamp;
     private Date date = new Date();
+    public LineChart priceChart;
 
     private Button Hours;
     private Button Week;
     private Button Month;
 
-    ArrayList timeArr;
-    ArrayList<Double> priceArr = new ArrayList<Double>();
+    // Unique Array Lists & first timestamp for each time period,
+    // to only have use a fixed amount of queues when switching to different charts
+    ArrayList time_24H_Arr = new ArrayList();
+    ArrayList<Double> price_24H_Arr = new ArrayList<Double>();
+    private long first_24H_timestamp;
 
-    public LineChart priceChart;
+    ArrayList time_1W_Arr = new ArrayList();
+    ArrayList<Double> price_1W_Arr = new ArrayList<Double>();
+    private long first_1W_timestamp;
+
 
     public ChartFragment(){
 
@@ -77,12 +85,13 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         Week = view.findViewById(R.id.Week_Button);
         Month = view.findViewById(R.id.Month_Button);
 
-        priceChart = (LineChart) view.findViewById(R.id.price_chart);
-        priceChart.getDescription().setEnabled(false);
-
         Hours.setOnClickListener(this);
         Week.setOnClickListener(this);
         Month.setOnClickListener(this);
+
+        priceChart = (LineChart) view.findViewById(R.id.price_chart);
+        priceChart.getDescription().setEnabled(false);
+        priceChart.getLegend().setEnabled(false);
 
         return view;
     }
@@ -96,6 +105,8 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
 
         try {
             queue.add(find24HPrice(date));
+            queue.add(find1WPrice(date));
+            Hours.setEnabled(false);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -108,24 +119,24 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
 
         queue = Volley.newRequestQueue(context.getContext());
 
+        Hours.setEnabled(true);
+        Week.setEnabled(true);
+        Month.setEnabled(true);
+
+        // plot chart based on which button clicked
         switch (v.getId()){
             case R.id.Hours_Button:
-                try {
-                    queue.add(find24HPrice(date));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    plotChart(first_24H_timestamp, price_24H_Arr, time_24H_Arr, priceChart);
+                    Hours.setEnabled(false);
                 break;
 
             case R.id.Week_Button:
-                try {
-                    queue.add(find1WPrice(date));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    plotChart(first_1W_timestamp, price_1W_Arr, time_1W_Arr, priceChart);
+                    Week.setEnabled(false);
                 break;
 
             case R.id.Month_Button:
+                Month.setEnabled(false);
                 break;
         }
 
@@ -142,10 +153,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         String url_for_historical_data = "https://rest.coinapi.io/v1/ohlcv/BTC/USD/history?period_id=6HRS&time_start=";
         String full_url = url_for_historical_data + time_1WeekAgo + "&time_end=" + current_time + "&apikey=" + api;
 
-        first_timestamp = get1WAgoTime(sdf, calendar);
-
-        final ArrayList<Double> price_Open = new ArrayList<Double>();
-        final ArrayList timestamps = new ArrayList<>();
+        first_1W_timestamp = get1WAgoTime(sdf, calendar);
 
         return new StringRequest(Request.Method.GET, full_url,
                 new Response.Listener<String>() {
@@ -167,39 +175,11 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
                                 Date date = df.parse(parsed_time);
                                 long unix_time = date.getTime();
                                 long final_time = unix_time / 1000;
-                                long timestamp = final_time - first_timestamp;
+                                long timestamp = final_time - first_1W_timestamp;
 
-                                timestamps.add(timestamp);
-                                price_Open.add(price);
+                                time_1W_Arr.add(timestamp);
+                                price_1W_Arr.add(price);
                             }
-                            setTimeArr(timestamps);
-                            timeArr = getTimeArr();
-
-                            setPriceArr(price_Open);
-                            priceArr = getPriceArr();
-
-                            LineDataSet lineDataSet = new LineDataSet(values(), "");
-                            lineDataSet.setValueTextSize(12);
-                            lineDataSet.setLineWidth(3);
-                            lineDataSet.setFillColor(Color.GREEN);
-                            lineDataSet.setDrawFilled(true);
-                            lineDataSet.setDrawValues(false);
-                            lineDataSet.setFillFormatter(new IFillFormatter() {
-                                @Override
-                                public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                                    return priceChart.getAxisLeft().getAxisMinimum();
-                                }
-                            });
-                            LineData data = new LineData(lineDataSet);
-
-                            priceChart.setData(data);
-                            priceChart.invalidate();
-
-
-                            // set the X-axis labels to time
-                            XAxis xAxis = priceChart.getXAxis();
-                            xAxis.setLabelCount(5, true);
-                            xAxis.setValueFormatter(new XValueFormatter(first_timestamp));
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -213,6 +193,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+
     public StringRequest find24HPrice(Date date) throws ParseException {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -225,10 +206,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         String full_url = url_for_historical_data + time_24hrsAgo + "&time_end=" + current_time + "&apikey=" + api;
 
         // convert the time from 24 hours ago from zero minutes mark to unix time
-        first_timestamp = get24HoursAgoTime(sdf, calendar);
-
-        final ArrayList<Double> price_Open = new ArrayList<Double>();
-        final ArrayList timestamps = new ArrayList<>();
+        first_24H_timestamp = get24HoursAgoTime(sdf, calendar);
 
         return new StringRequest(Request.Method.GET, full_url,
                 new Response.Listener<String>() {
@@ -251,39 +229,13 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
                             Date date = df.parse(parsed_time);
                             long unix_time = date.getTime();
                             long final_time = unix_time / 1000;
-                            long timestamp = final_time - first_timestamp;
+                            long timestamp = final_time - first_24H_timestamp;
 
-                            timestamps.add(timestamp);
-                            price_Open.add(price);
+                            time_24H_Arr.add(timestamp);
+                            price_24H_Arr.add(price);
                         }
-                        setTimeArr(timestamps);
-                        timeArr = getTimeArr();
+                        plotChart(first_24H_timestamp, price_24H_Arr, time_24H_Arr, priceChart);
 
-                        setPriceArr(price_Open);
-                        priceArr = getPriceArr();
-
-                        LineDataSet lineDataSet = new LineDataSet(values(), "");
-                        lineDataSet.setValueTextSize(12);
-                        lineDataSet.setLineWidth(3);
-                        lineDataSet.setFillColor(Color.GREEN);
-                        lineDataSet.setDrawFilled(true);
-                        lineDataSet.setDrawValues(false);
-                        lineDataSet.setFillFormatter(new IFillFormatter() {
-                        @Override
-                        public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                            return priceChart.getAxisLeft().getAxisMinimum();
-                            }
-                        });
-                        LineData data = new LineData(lineDataSet);
-
-                        priceChart.setData(data);
-                        priceChart.invalidate();
-
-
-                        // set the X-axis labels to time
-                        XAxis xAxis = priceChart.getXAxis();
-                        xAxis.setLabelCount(5, true);
-                        xAxis.setValueFormatter(new XValueFormatter(first_timestamp));
 
                         }   catch (JSONException | ParseException e) {
                             e.printStackTrace();
@@ -297,6 +249,30 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void plotChart(long timestamp, ArrayList<Double> priceArr, ArrayList timeArr, LineChart chart){
+        LineDataSet lineDataSet = new LineDataSet(values(priceArr, timeArr), "");
+        lineDataSet.setValueTextSize(12);
+        lineDataSet.setLineWidth(3);
+        lineDataSet.setFillColor(Color.GREEN);
+        lineDataSet.setDrawFilled(true);
+        lineDataSet.setDrawValues(false);
+        lineDataSet.setFillFormatter(new IFillFormatter() {
+            @Override
+            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                return priceChart.getAxisLeft().getAxisMinimum();
+            }
+        });
+        LineData data = new LineData(lineDataSet);
+
+        chart.setData(data);
+        chart.invalidate();
+
+        // set the X-axis labels to time
+        XAxis xAxis = priceChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelCount(5, true);
+        xAxis.setValueFormatter(new XValueFormatter(timestamp));
+    }
     private long get1WAgoTime(SimpleDateFormat sdf, Calendar calendar) throws ParseException {
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String WeekAgoTime = sdf.format(calendar.getTime());
@@ -356,7 +332,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
 
 
     // Creates data entries for the data set that will be plotted
-    public ArrayList<Entry> values () {
+    public ArrayList<Entry> values (ArrayList<Double> priceArr, ArrayList timeArr) {
         ArrayList<Entry> values = new ArrayList<Entry>();
         for (int i = 0; i < priceArr.size(); i++){
 
@@ -370,33 +346,16 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         return values;
     }
 
-    // getters and setters for arraylists
-    public ArrayList getTimeArr(){
-        return timeArr;
-    }
-
-    public void setTimeArr(ArrayList arrayList){
-          this.timeArr = arrayList;
-    }
-
-    public ArrayList<Double> getPriceArr(){
-        return priceArr;
-    }
-    public void setPriceArr(ArrayList<Double> arrayList){
-        this.priceArr = arrayList;
-    }
-
-
 
     // Code used for this XValueFormatter class from https://github.com/PhilJay/MPAndroidChart/issues/789
     // User: @Yasir-Ghunaim
     class XValueFormatter extends ValueFormatter {
-        private long timestamp;
+        private long x_value_timestamp;
         private Date mDate;
         private DateFormat mDataFormat;
 
         public XValueFormatter(long timestamp){
-            this.timestamp = timestamp;
+            this.x_value_timestamp = timestamp; // change timestamp to equal to param for the different timestamps
             this.mDate = date;
             this.mDataFormat = new SimpleDateFormat("MM-dd HH:mm");
         }
@@ -404,7 +363,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         // Change getFormattedValue() method to getAxisLabel since the old method is now deprecated
         public String getAxisLabel(float value, AxisBase axis){
             long convertedTimestamp = (long) value;
-            long og_timestamp = first_timestamp + convertedTimestamp;
+            long og_timestamp = this.x_value_timestamp + convertedTimestamp;
             return getHour(og_timestamp);
         }
         private String getHour(long timestamp){
