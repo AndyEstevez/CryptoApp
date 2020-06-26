@@ -11,3 +11,4 @@
 ![](images/price_of_btc(resized).png)
 ![](images/24hr_chart.png)
 ![](images/1Week_chart.png)
+![](images/1Month_chart.png)

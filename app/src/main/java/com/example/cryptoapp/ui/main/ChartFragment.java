@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +51,8 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
     private Date date = new Date();
     public LineChart priceChart;
 
+    private TextView change_in_price;
+
     private Button Hours;
     private Button Week;
     private Button Month;
@@ -64,6 +66,10 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
     ArrayList time_1W_Arr = new ArrayList();
     ArrayList<Double> price_1W_Arr = new ArrayList<Double>();
     private long first_1W_timestamp;
+    
+    ArrayList time_1M_Arr = new ArrayList();
+    ArrayList<Double> price_1M_Arr = new ArrayList<Double>();
+    private long first_1M_timestamp;
 
 
     public ChartFragment(){
@@ -80,6 +86,8 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
+
+        change_in_price = view.findViewById(R.id.change_in_price);
 
         Hours = view.findViewById(R.id.Hours_Button);
         Week = view.findViewById(R.id.Week_Button);
@@ -106,6 +114,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         try {
             queue.add(find24HPrice(date));
             queue.add(find1WPrice(date));
+            queue.add(find1MPrice(date));
             Hours.setEnabled(false);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -127,20 +136,88 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.Hours_Button:
                     plotChart(first_24H_timestamp, price_24H_Arr, time_24H_Arr, priceChart);
+                    setPercentColor(price_24H_Arr);
+                    change_in_price.setText("24 Hour Change: " + getPercentageChange(price_24H_Arr) + "%");
                     Hours.setEnabled(false);
-                break;
+                    break;
 
             case R.id.Week_Button:
                     plotChart(first_1W_timestamp, price_1W_Arr, time_1W_Arr, priceChart);
+                    setPercentColor(price_1W_Arr);
+                    change_in_price.setText("1 Week Change: " + getPercentageChange(price_1W_Arr) + "%");
                     Week.setEnabled(false);
-                break;
+                    break;
 
             case R.id.Month_Button:
-                Month.setEnabled(false);
-                break;
+                    plotChart(first_1M_timestamp, price_1M_Arr, time_1M_Arr, priceChart);
+                    setPercentColor(price_1M_Arr);
+                    change_in_price.setText("1 Month Change: " + getPercentageChange(price_1M_Arr) + "%");
+                    Month.setEnabled(false);
+                    break;
         }
 
     }
+
+    private void setPercentColor (ArrayList<Double> priceArr){
+        Double percentageChange = getPercentageChange(priceArr);
+        if(percentageChange < 0.00){
+            change_in_price.setTextColor(Color.RED);
+        }
+        else{
+            change_in_price.setTextColor(Color.GREEN);
+        }
+    }
+
+    public StringRequest find1MPrice(Date date) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+        String current_time = sdf.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -30);
+        String time_1MonthAgo = sdf.format(calendar.getTime());
+
+        String url_for_historical_data = "https://rest.coinapi.io/v1/ohlcv/BTC/USD/history?period_id=1DAY&time_start=";
+        String full_url = url_for_historical_data + time_1MonthAgo + "&apikey=" + api;
+
+        first_1M_timestamp = get1MAgoTime(sdf, calendar);
+
+        return new StringRequest(Request.Method.GET, full_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+
+                            for(int i = 0; i < jsonArray.length(); i++){
+                                JSONObject tempJSONObject = jsonArray.getJSONObject(i);
+
+                                Double price = tempJSONObject.getDouble("price_open");
+                                String time = tempJSONObject.getString("time_period_start");
+
+                                String parsed_time = time.substring(0, 10) + " " + time.substring(11, 16);
+
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                Date date = df.parse(parsed_time);
+                                long unix_time = date.getTime();
+                                long final_time = unix_time / 1000;
+                                long timestamp = final_time - first_1M_timestamp;
+
+                                time_1M_Arr.add(timestamp);
+                                price_1M_Arr.add(price);
+                            }
+
+                        } catch (JSONException | ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Error");
+            }
+        });
+    }
+
 
     public StringRequest find1WPrice(Date date) throws ParseException {
         Calendar calendar = Calendar.getInstance();
@@ -170,7 +247,6 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
 
                                 String parsed_time = time.substring(0, 10) + " " + time.substring(11, 16);
 
-                                // change the date to unix time & subtract against the first hr in the 24hr time set
                                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                                 Date date = df.parse(parsed_time);
                                 long unix_time = date.getTime();
@@ -188,7 +264,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                System.out.println("Error");
             }
         });
     }
@@ -235,7 +311,8 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
                             price_24H_Arr.add(price);
                         }
                         plotChart(first_24H_timestamp, price_24H_Arr, time_24H_Arr, priceChart);
-
+                        setPercentColor(price_24H_Arr);
+                        change_in_price.setText("24 Hour Change: " + getPercentageChange(price_24H_Arr) + "%");
 
                         }   catch (JSONException | ParseException e) {
                             e.printStackTrace();
@@ -273,6 +350,28 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         xAxis.setLabelCount(5, true);
         xAxis.setValueFormatter(new XValueFormatter(timestamp));
     }
+
+    private Double getPercentageChange(ArrayList<Double> priceArr){
+        double previous_price = priceArr.get(0);
+        double current_price = priceArr.get(priceArr.size()-1);
+
+        double percentage = (((previous_price - current_price) / previous_price) * 100);
+        double rounded_percent = Math.round(percentage * 100.0) / 100.0;
+        return rounded_percent;
+    }
+
+    private long get1MAgoTime(SimpleDateFormat sdf, Calendar calendar) throws ParseException {
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        calendar.add(Calendar.DATE, 1);
+        String MonthAgoTime = sdf.format(calendar.getTime());
+        String time = MonthAgoTime.substring(0, 10) + " " + "00:00";
+        Date d = sdf.parse(time);
+        long unix_time = d.getTime();
+        long final_time = unix_time / 1000;
+
+        return final_time;
+    }
+
     private long get1WAgoTime(SimpleDateFormat sdf, Calendar calendar) throws ParseException {
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String WeekAgoTime = sdf.format(calendar.getTime());
@@ -287,7 +386,6 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
     }
 
     private String change1WHour(int hour){
-        //23-4 = 0,     5-10 = 6,        11-16 = 12,        17-22 = 18
         if(hour >= 23 || hour <= 4){
             return String.valueOf(0);
         }
