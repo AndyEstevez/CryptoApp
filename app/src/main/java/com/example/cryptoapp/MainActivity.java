@@ -39,27 +39,24 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("checkLogin", true);
+        editor.putBoolean("checkLogin", false);
         editor.apply();
 
-//        final boolean checkLogin = preferences.getBoolean("checkLogin", true);
-//        preferences.edit().putBoolean("checkLogin", checkLogin).commit();
-        final boolean checkLogin = true;
-
+        final boolean login = true;
         ImageButton mainButton = (ImageButton) findViewById(R.id.main_button);
         final Context context = this;
         mainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean checkLogin = sharedPreferences.getBoolean("checkLogin", true);
+                boolean checkLogin = sharedPreferences.getBoolean("checkLogin", false);
 
-                if(checkLogin){
-                    Intent goToBTC = new Intent(context, RecyclerViewActivity.class);
+                if(login){
+                    Intent goToBTC = new Intent(MainActivity.this, RecyclerViewActivity.class);
                     startActivity(goToBTC);
                 }
                 else {
-                    Intent goToLogin = new Intent(context, LoginActivity.class);
+                    Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(goToLogin);
                 }
             }

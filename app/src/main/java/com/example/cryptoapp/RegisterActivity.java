@@ -12,6 +12,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-       Intent register = getIntent();
+        System.out.println("In Register Activity");
+
+
     }
 }
