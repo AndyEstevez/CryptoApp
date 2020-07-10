@@ -13,13 +13,15 @@
             android:name=".Chart_and_HoldingsActivity"
             android:label="@string/title_activity_chart_and__holdings"
             android:parentActivityName=".RecyclerViewActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RecyclerViewActivity"/>
         </activity>
 
-        <activity android:name=".RecyclerViewActivity" />
+        <activity
+            android:name=".RecyclerViewActivity"
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name=".RegisterActivity"

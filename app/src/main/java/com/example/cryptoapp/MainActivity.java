@@ -24,7 +24,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RequestQueue queue;
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String stayLoggedIn = "loggedIn";
+    public static final String loggedOnce = "loggedOnce";
+    public static final String USER = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,29 +40,40 @@ public class MainActivity extends AppCompatActivity {
         // create a listener for the image button to go to Login Activity if logged out
         // If logged in send to price of coin
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("checkLogin", false);
-        editor.apply();
+        ImageButton mainButton = findViewById(R.id.main_button);
 
-        final boolean login = true;
-        ImageButton mainButton = (ImageButton) findViewById(R.id.main_button);
-        final Context context = this;
+        final SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        final boolean checkLogin = preferences.getBoolean(stayLoggedIn, false);
+        final boolean check1Login = preferences.getBoolean(loggedOnce, false);
+
+        if(checkLogin == true || check1Login == true){
+            Intent gotoPortfolio = new Intent(this, RecyclerViewActivity.class);
+            startActivity(gotoPortfolio);
+        }
+
+
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean("checkLogin", false);
+//        editor.apply();
+
         mainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean checkLogin = sharedPreferences.getBoolean("checkLogin", false);
-
-                if(login){
-                    Intent goToBTC = new Intent(MainActivity.this, RecyclerViewActivity.class);
-                    startActivity(goToBTC);
+                if (check1Login == false) {
+                    Intent goLogin = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(goLogin);
                 }
-                else {
-                    Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(goToLogin);
+                else if(checkLogin == true){
+                    Intent gotoPortfolio = new Intent(MainActivity.this, RecyclerViewActivity.class);
+                    startActivity(gotoPortfolio);
+                }
+                else if(check1Login == true){
+                    Intent gotoPortfolio = new Intent(MainActivity.this, RecyclerViewActivity.class);
+                    startActivity(gotoPortfolio);
                 }
             }
+
         });
 
     }

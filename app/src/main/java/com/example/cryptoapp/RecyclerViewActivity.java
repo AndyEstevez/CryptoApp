@@ -1,12 +1,18 @@
 package com.example.cryptoapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,21 +39,34 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     private RequestQueue queue;
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String stayLoggedIn = "loggedIn";
+    public static final String loggedOnce = "loggedOnce";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cardview);
 
-        Intent intent = getIntent();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle("CryptoApp");
+
 
 //        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.cardlist);
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 //        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 //        recyclerView.setLayoutManager(linearLayoutManager);
 
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        sharedPreferences.getBoolean(stayLoggedIn, true);
+        sharedPreferences.getBoolean(loggedOnce, true);
+
         queue = Volley.newRequestQueue(this);
 
-        String api = "PUT-API-KEY-HERE"; // from https://www.coinapi.io/
         String url_for_price = "https://rest.coinapi.io/v1/assets";
         String url_for_image = "https://rest.coinapi.io/v1/assets/icons/32";
 
@@ -129,6 +148,29 @@ public class RecyclerViewActivity extends AppCompatActivity {
         queue.add(priceRequest);
         queue.add(imageRequest);
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater findMenuItems = getMenuInflater();
+        findMenuItems.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_logout:
+                editor.putBoolean(stayLoggedIn, false);
+                editor.putBoolean(loggedOnce, false);
+                editor.apply();
+                editor.commit();
+                Intent intent = new Intent(RecyclerViewActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void sendToChart(View view) {
