@@ -68,7 +68,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         String url_for_price = "https://rest.coinapi.io/v1/assets";
-        String url_for_image = "https://rest.coinapi.io/v1/assets/icons/32";
+        String url_for_image = "https://rest.coinapi.io/v1/assets/icons/128";
 
         final TextView name = findViewById(R.id.name_of_coin);
         final TextView price = findViewById(R.id.price_of_coin);
@@ -94,7 +94,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                                     System.out.println(priceCoin);
 
 
-                                    price.setText("Price: $" + changeDecimals.format(priceCoin));
+                                    price.setText("$" + changeDecimals.format(priceCoin));
                                     name.setText(bitcoin.getString("asset_id"));
                                     break;
                                 }
@@ -129,7 +129,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                                     String image_url = (bitcoin.getString("url"));
                                     Picasso.get()
                                             .load(image_url)
-                                            .resize(32, 32)
+                                            .resize(64, 64)
                                             .into(image);
                                     break;
                                 }

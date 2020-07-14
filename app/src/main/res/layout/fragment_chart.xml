@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:background="@drawable/login_background"
     android:stackFromBottom="true"
     android:transcriptMode="alwaysScroll" >
 
@@ -54,6 +55,8 @@
             android:id="@+id/change_in_price"
             android:layout_width="175dp"
             android:layout_height="50dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/price_chart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"

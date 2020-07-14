@@ -24,6 +24,7 @@ import com.example.cryptoapp.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -349,6 +350,12 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setLabelCount(5, true);
         xAxis.setValueFormatter(new XValueFormatter(timestamp));
+        xAxis.setTextSize(12f);
+        xAxis.setTextColor(Color.WHITE);
+
+        YAxis yAxis = priceChart.getAxisLeft();
+        yAxis.setTextSize(12f);
+        yAxis.setTextColor(Color.WHITE);
     }
 
     private Double getPercentageChange(ArrayList<Double> priceArr){
