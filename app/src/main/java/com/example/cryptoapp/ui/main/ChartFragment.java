@@ -113,7 +113,7 @@ public class ChartFragment extends Fragment implements View.OnClickListener {
         queue = Volley.newRequestQueue(context.getContext());
 
         try {
-            queue.add(find24HPrice(date));
+//            queue.add(find24HPrice(date));
             queue.add(find1WPrice(date));
             queue.add(find1MPrice(date));
             Hours.setEnabled(false);

@@ -6,17 +6,26 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="Unable to start activity ComponentInfo" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35b30243-204f-4681-9f0d-94d99ccfd036" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/Buy_SellActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_buy__sell.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/Chart_and_HoldingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/Chart_and_HoldingsActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/RecyclerViewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/RecyclerViewActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/ui/main/ChartFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/ui/main/ChartFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_recycler_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_recycler_view.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/cardview.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/cardview.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_chart.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_chart.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/ui/main/HoldingsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/cryptoapp/ui/main/HoldingsFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/cardview_for_transactions.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/cardview_for_transactions.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_holdings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_holdings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,8 +55,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="valueResourceFile" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -75,8 +84,9 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Home\Desktop\CryptoApp\app\src\main\res\drawable-xxxhdpi" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Home\Desktop\CryptoApp\CryptoApp\app\src\main\res\drawable" />
+      <recent name="C:\Users\Home\Desktop\CryptoApp\CryptoApp\app\src\main\res\drawable-xxhdpi" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.cryptoapp.ui.main" />
@@ -85,9 +95,8 @@
     <key name="android.template.packageName">
       <recent name="com.example.cryptoapp" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Home\Desktop\CryptoApp\CryptoApp\app\src\main\res\drawable" />
-      <recent name="C:\Users\Home\Desktop\CryptoApp\CryptoApp\app\src\main\res\drawable-xxhdpi" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Home\Desktop\CryptoApp\app\src\main\res\drawable-xxxhdpi" />
     </key>
   </component>
   <component name="RunDashboard">

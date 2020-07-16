@@ -52,13 +52,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle("CryptoApp");
 
-
-//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.cardlist);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(linearLayoutManager);
 
         sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();

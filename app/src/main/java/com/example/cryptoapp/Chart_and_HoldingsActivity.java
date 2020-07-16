@@ -2,6 +2,7 @@ package com.example.cryptoapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.cryptoapp.ui.main.ChartFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -26,5 +27,10 @@ public class Chart_and_HoldingsActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    public void sendToCreateTransaction(View view) {
+        Intent sendtoMakeTransaction = new Intent(this, Buy_SellActivity.class);
+        startActivity(sendtoMakeTransaction);
     }
 }

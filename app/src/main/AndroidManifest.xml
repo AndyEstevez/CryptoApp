@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Buy_SellActivity"></activity>
         <activity
             android:name=".Chart_and_HoldingsActivity"
             android:label="@string/title_activity_chart_and__holdings"
@@ -16,13 +17,11 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RecyclerViewActivity"/>
+                android:value=".RecyclerViewActivity" />
         </activity>
-
         <activity
             android:name=".RecyclerViewActivity"
-            android:theme="@style/AppTheme"/>
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity">
@@ -30,7 +29,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:label="CryptoApp"
@@ -39,7 +37,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -50,7 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
