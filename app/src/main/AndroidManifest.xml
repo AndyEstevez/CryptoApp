@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Buy_SellActivity"></activity>
+        <activity
+            android:name=".Buy_SellActivity"></activity>
         <activity
             android:name=".Chart_and_HoldingsActivity"
             android:label="@string/title_activity_chart_and__holdings"

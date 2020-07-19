@@ -5,12 +5,14 @@ public class Transaction {
     private String type_of_transaction;
     private String time_done;
     private String amount;
+    private String paid;
 
-    public Transaction(int image, String type, String time, String total){
+    public Transaction(int image, String type, String time, String total, String paid){
         this.image = image;
         this.type_of_transaction = type;
         this.time_done = time;
         this.amount = total;
+        this.paid = paid;
     }
 
     public int getImage(){
@@ -28,4 +30,13 @@ public class Transaction {
     public String getAmount(){
         return this.amount;
     }
+
+    public String getPaid(){
+        return this.paid;
+    }
+
+
+
+
+
 }

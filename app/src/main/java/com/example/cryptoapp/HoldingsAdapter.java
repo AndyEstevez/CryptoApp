@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
+
 
 
 public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.RecyclerViewHolder>{
@@ -24,6 +24,7 @@ public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.Recycl
         public TextView type_of_transaction;
         public TextView time;
         public TextView amount;
+        public TextView paid;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -31,7 +32,8 @@ public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.Recycl
             buy_sell_img = itemView.findViewById(R.id.buy_sell_img);
             type_of_transaction = itemView.findViewById(R.id.bought_sold);
             time = itemView.findViewById(R.id.time);
-            amount = itemView.findViewById(R.id.amount);
+            amount = itemView.findViewById(R.id.amount_of_coin);
+            paid = itemView.findViewById(R.id.paid);
         }
 
     }
@@ -57,6 +59,7 @@ public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.Recycl
         holder.type_of_transaction.setText(currentTransaction.getType());
         holder.time.setText(currentTransaction.getTime());
         holder.amount.setText(currentTransaction.getAmount());
+        holder.paid.setText(currentTransaction.getPaid());
     }
 
     @Override

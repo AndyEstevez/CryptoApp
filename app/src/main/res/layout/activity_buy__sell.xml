@@ -11,6 +11,7 @@
     <mehdi.sakout.fancybuttons.FancyButton
         android:id="@+id/btn_buy"
         android:text="Buy"
+        android:onClick="buyOption"
         fancy:fb_defaultColor="@color/colorGreen"
         android:layout_width="150dp"
         android:layout_height="50dp"
@@ -27,6 +28,7 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:text="Sell"
+        android:onClick="sellOption"
         fancy:fb_defaultColor="@color/colorGreen"
         android:layout_marginTop="20dp"
         android:layout_marginStart="70dp"
@@ -126,6 +128,7 @@
         android:textColor="@color/colorGreen"
         android:textColorHint="@color/colorGreen"
         android:textSize="20sp"
+        android:onClick="datePicker"
         android:clickable="true"
         android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"

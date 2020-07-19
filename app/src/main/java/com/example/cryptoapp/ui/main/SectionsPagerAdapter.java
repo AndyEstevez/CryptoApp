@@ -25,19 +25,27 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         mContext = context;
     }
 
+
+
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
+        Fragment fragment = null;
+
         switch (position) {
             case (0):
-                return ChartFragment.newInstance();
+                fragment = new ChartFragment();
+                break;
             case (1):
-                return HoldingsFragment.newInstance();
+                fragment = new HoldingsFragment();
+                break;
             default: {
-                return null;
+                fragment = null;
+                break;
             }
         }
+        return fragment;
     }
 
     @Nullable

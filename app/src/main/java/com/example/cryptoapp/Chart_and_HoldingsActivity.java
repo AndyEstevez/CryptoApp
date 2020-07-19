@@ -1,10 +1,7 @@
 package com.example.cryptoapp;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
-import com.example.cryptoapp.ui.main.ChartFragment;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,16 +18,8 @@ public class Chart_and_HoldingsActivity extends AppCompatActivity  {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
-
-        Intent intent = getIntent();
-
-
-
     }
 
-    public void sendToCreateTransaction(View view) {
-        Intent sendtoMakeTransaction = new Intent(this, Buy_SellActivity.class);
-        startActivity(sendtoMakeTransaction);
-    }
+
+
 }

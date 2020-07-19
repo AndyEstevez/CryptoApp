@@ -45,16 +45,26 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/amount"
+            android:id="@+id/amount_of_coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="340dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="6dp"
             android:text="10 BTC"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/paid"
+            android:text="Paid 100000 USD"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+            android:layout_marginStart="280dp"/>
 
     </RelativeLayout>
 
