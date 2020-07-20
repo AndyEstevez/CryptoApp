@@ -45,7 +45,7 @@ public class Buy_SellActivity extends AppCompatActivity {
                     goBack = new Intent();
 
                     date = et_date.getText().toString();
-                    quantity = et_quantity.getText().toString() + " BTC";
+                    quantity = et_quantity.getText().toString();
                     price_per_coin = "Paid $" + et_price_per_coin.getText().toString() + " USD";
 
                     goBack.putExtra("image", R.drawable.resize_green);
@@ -62,8 +62,9 @@ public class Buy_SellActivity extends AppCompatActivity {
                     goBack = new Intent();
 
                     date = et_date.getText().toString();
-                    quantity = et_quantity.getText().toString() + " BTC";
-                    price_per_coin = "Paid $" + et_price_per_coin.getText().toString() + " USD";
+                    quantity = et_quantity.getText().toString();
+                    double negative_value = Double.valueOf(et_price_per_coin.getText().toString());
+                    price_per_coin = "Received $" + negative_value + " USD";
 
                     goBack.putExtra("image", R.drawable.new_red);
                     goBack.putExtra("type", "Sold");

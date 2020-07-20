@@ -19,10 +19,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{(R.string.historical_price), (R.string.holdings)};
     private final Context mContext;
+    private double price;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, double priceCoin) {
         super(fm);
         mContext = context;
+        price = priceCoin;
     }
 
 
@@ -38,7 +40,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new ChartFragment();
                 break;
             case (1):
-                fragment = new HoldingsFragment();
+                fragment = new HoldingsFragment(price);
                 break;
             default: {
                 fragment = null;

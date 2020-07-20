@@ -40,6 +40,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
+    private double priceCoin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                                 if(getBTC.equalsIgnoreCase("BTC")){
                                     JSONObject bitcoin = jsonArray.getJSONObject(i);
                                     System.out.println(bitcoin.toString());
-                                    double priceCoin = (Double.valueOf(bitcoin.getString("price_usd")));
+                                    priceCoin = (Double.valueOf(bitcoin.getString("price_usd")));
                                     DecimalFormat changeDecimals = new DecimalFormat("##.00");
                                     System.out.println(priceCoin);
 
@@ -164,6 +166,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     public void sendToChart(View view) {
         Intent chart_holdings = new Intent(this, Chart_and_HoldingsActivity.class);
+        chart_holdings.putExtra("value_of_bitcoin", priceCoin);
         startActivity(chart_holdings);
     }
+
+
 }

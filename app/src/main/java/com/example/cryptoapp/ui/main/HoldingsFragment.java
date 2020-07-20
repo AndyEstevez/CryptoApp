@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import androidx.annotation.Nullable;
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cryptoapp.Buy_SellActivity;
 import com.example.cryptoapp.HoldingsAdapter;
 import com.example.cryptoapp.R;
+import com.example.cryptoapp.RecyclerViewActivity;
 import com.example.cryptoapp.Transaction;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class HoldingsFragment extends Fragment {
@@ -26,6 +29,10 @@ public class HoldingsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager layoutManager;
+    private TextView portfolio_value;
+    private double getPrice;
+    private double value;
+
     ArrayList<Transaction> transactionArrayList = new ArrayList<>();
     Button btn_add;
     Transaction transaction;
@@ -36,8 +43,8 @@ public class HoldingsFragment extends Fragment {
 
 
 
-    public HoldingsFragment(){
-
+    public HoldingsFragment(double price){
+        getPrice = price;
     }
 
 
@@ -47,6 +54,8 @@ public class HoldingsFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_holdings, container, false);
 
         btn_add = v.findViewById(R.id.btn_add);
+        portfolio_value = v.findViewById(R.id.tv_value);
+
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +63,8 @@ public class HoldingsFragment extends Fragment {
                 startActivityForResult(sendtoMakeTransaction, 1);
             }
         });
+
+
 
         mRecyclerView = v.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
@@ -84,8 +95,25 @@ public class HoldingsFragment extends Fragment {
                 date = data.getStringExtra("date");
                 quantity = data.getStringExtra("quantity");
                 price_per_coin = data.getStringExtra("price_per_coin");
-                transaction = new Transaction(image, type, date, quantity, price_per_coin);
+                transaction = new Transaction(image, type, date, quantity+" BTC", price_per_coin);
                 transactionArrayList.add(transaction);
+
+                DecimalFormat changeDecimals = new DecimalFormat("##.00");
+                double old_value = value;
+
+                if(type == "Bought") {
+                    value = Double.parseDouble(quantity) * getPrice;
+
+                    double full_value = old_value + value;
+                    portfolio_value.setText("$" + changeDecimals.format(full_value));
+
+                }
+                else{
+                    value = (Double.parseDouble(quantity) * getPrice);
+
+                    double full_value = old_value - value;
+                    portfolio_value.setText("$" + changeDecimals.format(full_value));
+                }
 
                 mRecyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getContext());
@@ -98,5 +126,13 @@ public class HoldingsFragment extends Fragment {
             }
         }
     }
+
+//    public double getValue(Transaction transaction){
+//        for(int i = 0; i <  i++){
+//
+//        }
+//
+//
+//    }
 
 }
