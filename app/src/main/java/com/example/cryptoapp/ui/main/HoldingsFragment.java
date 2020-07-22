@@ -42,8 +42,7 @@ public class HoldingsFragment extends Fragment {
     String type, date, quantity, price_per_coin;
 
 
-
-    public HoldingsFragment(double price){
+    public HoldingsFragment(double price) {
         getPrice = price;
     }
 
@@ -65,7 +64,6 @@ public class HoldingsFragment extends Fragment {
         });
 
 
-
         mRecyclerView = v.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -80,7 +78,7 @@ public class HoldingsFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState){
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
@@ -89,31 +87,19 @@ public class HoldingsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if(resultCode == -1) {
+            if (resultCode == -1) {
                 image = data.getIntExtra("image", 0);
                 type = data.getStringExtra("type");
                 date = data.getStringExtra("date");
                 quantity = data.getStringExtra("quantity");
                 price_per_coin = data.getStringExtra("price_per_coin");
-                transaction = new Transaction(image, type, date, quantity+" BTC", price_per_coin);
+
+                transaction = new Transaction(image, type, date, quantity + " BTC", price_per_coin);
                 transactionArrayList.add(transaction);
 
                 DecimalFormat changeDecimals = new DecimalFormat("##.00");
-                double old_value = value;
+                portfolio_value.setText("$" + changeDecimals.format(testing(transactionArrayList)));
 
-                if(type == "Bought") {
-                    value = Double.parseDouble(quantity) * getPrice;
-
-                    double full_value = old_value + value;
-                    portfolio_value.setText("$" + changeDecimals.format(full_value));
-
-                }
-                else{
-                    value = (Double.parseDouble(quantity) * getPrice);
-
-                    double full_value = old_value - value;
-                    portfolio_value.setText("$" + changeDecimals.format(full_value));
-                }
 
                 mRecyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getContext());
@@ -127,12 +113,44 @@ public class HoldingsFragment extends Fragment {
         }
     }
 
-//    public double getValue(Transaction transaction){
-//        for(int i = 0; i <  i++){
-//
-//        }
-//
-//
-//    }
+    public double testing(ArrayList<Transaction> arrayList) {
+        double temp_val, coin_val;
+        double val = 0.00;
 
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).getType().equals("Bought")) {
+                coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                        .substring(6, arrayList.get(i).getPaid().indexOf(" ", 6))) - getPrice;
+                if (coin_val < 0.00) {
+                    coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                            .substring(6, arrayList.get(i).getPaid().indexOf(" ", 6))) - coin_val;
+                } else {
+                    coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                            .substring(6, arrayList.get(i).getPaid().indexOf(" ", 6))) + coin_val;
+                }
+                temp_val = coin_val * Double.parseDouble(arrayList.get(i).getAmount()
+                        .substring(0, arrayList.get(i).getAmount().indexOf(" ")));
+
+                val = val + temp_val;
+            } else {
+                coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                        .substring(10, arrayList.get(i).getPaid().indexOf(" ", 9))) - getPrice;
+
+                if (coin_val < 0.00) {
+                    coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                            .substring(10, arrayList.get(i).getPaid().indexOf(" ", 9))) - coin_val;
+                } else {
+                    coin_val = Double.parseDouble(arrayList.get(i).getPaid()
+                            .substring(10, arrayList.get(i).getPaid().indexOf(" ", 9))) + coin_val;
+                }
+                temp_val = coin_val * Double.parseDouble(arrayList.get(i).getAmount()
+                        .substring(0, arrayList.get(i).getAmount().indexOf(" ")));
+
+                val = val - temp_val;
+
+
+            }
+        }
+        return val;
+    }
 }

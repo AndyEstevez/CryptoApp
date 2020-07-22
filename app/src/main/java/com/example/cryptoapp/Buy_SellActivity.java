@@ -46,7 +46,7 @@ public class Buy_SellActivity extends AppCompatActivity {
 
                     date = et_date.getText().toString();
                     quantity = et_quantity.getText().toString();
-                    price_per_coin = "Paid $" + et_price_per_coin.getText().toString() + " USD";
+                    price_per_coin = "Paid $" + et_price_per_coin.getText().toString() + " USD per coin";
 
                     goBack.putExtra("image", R.drawable.resize_green);
                     goBack.putExtra("type", "Bought");
@@ -63,8 +63,7 @@ public class Buy_SellActivity extends AppCompatActivity {
 
                     date = et_date.getText().toString();
                     quantity = et_quantity.getText().toString();
-                    double negative_value = Double.valueOf(et_price_per_coin.getText().toString());
-                    price_per_coin = "Received $" + negative_value + " USD";
+                    price_per_coin = "Received $" + et_price_per_coin.getText().toString() + " USD per coin";
 
                     goBack.putExtra("image", R.drawable.new_red);
                     goBack.putExtra("type", "Sold");
