@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         final boolean checkLogin = preferences.getBoolean(stayLoggedIn, false);
         final boolean check1Login = preferences.getBoolean(loggedOnce, false);
+        String username = preferences.getString(USER, null);
 
         if(checkLogin == true || check1Login == true){
             Intent gotoPortfolio = new Intent(this, RecyclerViewActivity.class);

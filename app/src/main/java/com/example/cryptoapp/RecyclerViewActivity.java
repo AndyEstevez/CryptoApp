@@ -37,6 +37,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String stayLoggedIn = "loggedIn";
     public static final String loggedOnce = "loggedOnce";
+    public static final String USER = "username";
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -55,6 +56,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         sharedPreferences.getBoolean(stayLoggedIn, true);
         sharedPreferences.getBoolean(loggedOnce, true);
+        sharedPreferences.getString(USER, null);
 
         queue = Volley.newRequestQueue(this);
 

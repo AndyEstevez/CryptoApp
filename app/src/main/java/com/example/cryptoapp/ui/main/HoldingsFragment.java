@@ -1,6 +1,8 @@
 package com.example.cryptoapp.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,14 @@ import com.example.cryptoapp.HoldingsAdapter;
 import com.example.cryptoapp.R;
 import com.example.cryptoapp.RecyclerViewActivity;
 import com.example.cryptoapp.Transaction;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HoldingsFragment extends Fragment {
 
@@ -31,15 +38,20 @@ public class HoldingsFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private TextView portfolio_value;
     private double getPrice;
-    private double value;
 
-    ArrayList<Transaction> transactionArrayList = new ArrayList<>();
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String USER = "username";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+
+    ArrayList<Transaction> transactionArrayList;
     Button btn_add;
     Transaction transaction;
     View v;
 
     int image;
-    String type, date, quantity, price_per_coin;
+    String type, date, quantity, price_per_coin, username;
 
 
     public HoldingsFragment(double price) {
@@ -54,6 +66,12 @@ public class HoldingsFragment extends Fragment {
 
         btn_add = v.findViewById(R.id.btn_add);
         portfolio_value = v.findViewById(R.id.tv_value);
+
+        sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        username = sharedPreferences.getString(USER, null);
+        System.out.println("Username: " + username);
+        loadTransactions(username);
+
 
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +116,9 @@ public class HoldingsFragment extends Fragment {
                 transactionArrayList.add(transaction);
 
                 DecimalFormat changeDecimals = new DecimalFormat("##.00");
-                portfolio_value.setText("$" + changeDecimals.format(testing(transactionArrayList)));
+                portfolio_value.setText("$" + changeDecimals.format(getNetCost(transactionArrayList)));
 
+                saveTransactions(username);
 
                 mRecyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getContext());
@@ -109,11 +128,13 @@ public class HoldingsFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
                 mRecyclerView.setLayoutManager(layoutManager);
 
+
+
             }
         }
     }
 
-    public double testing(ArrayList<Transaction> arrayList) {
+    public double getNetCost(ArrayList<Transaction> arrayList) {
         double temp_val, coin_val;
         double val = 0.00;
 
@@ -152,5 +173,26 @@ public class HoldingsFragment extends Fragment {
             }
         }
         return val;
+    }
+
+    private void saveTransactions(String username){
+        sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String arraylist = gson.toJson(transactionArrayList);
+        editor.putString("transactions", arraylist);
+        editor.apply();
+    }
+
+    private void loadTransactions(String username){
+        sharedPreferences = this.getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String arraylist = sharedPreferences.getString("transactions", null);
+        Type type = new TypeToken<ArrayList<Transaction>>(){}.getType();
+        transactionArrayList = gson.fromJson(arraylist, type);
+
+        if(transactionArrayList == null){
+            transactionArrayList = new ArrayList<>();
+        }
     }
 }

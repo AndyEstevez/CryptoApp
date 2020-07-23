@@ -52,8 +52,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     editor.putBoolean(loggedOnce, true);
                     editor.putString(USER, username);
+                    System.out.println(USER);
                     editor.apply();
-                    editor.commit();
+//                    editor.commit();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
                 else{
