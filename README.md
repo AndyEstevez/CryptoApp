@@ -11,8 +11,8 @@ An android app that creates an account, view the current pricing of Bitcoin base
 - <a href="https://coinapi.io">CoinAPI</a>: API used for getting the image, current price and historical price of Bitcoin
 
 ## Screenshots
-<img src="images/LoginPage.png" height='240' width='240'/>
-<img src="images/price_of_btc.png" height='240' width='240'/>
-<img src="images/24hr_chart.png" height='240' width='240'/>
-<img src="images/portfolio_tracker.png" height='240' width='240'/>
-<img src="images/creating_transaction.png" height='240' width='240'/>
+<img src="images/LoginPage.png" height='auto' width='240'/>
+<img src="images/price_of_btc.png" height='auto' width='240'/>
+<img src="images/24hr_chart.png" height='auto' width='240'/>
+<img src="images/portfolio_tracker.png" height='auto' width='240'/>
+<img src="images/creating_transaction.png" height='auto' width='240'/>
