@@ -7,7 +7,7 @@ public class Transaction {
     private String amount;
     private String paid;
 
-    public Transaction(int image, String type, String time, String total, String paid){
+    public Transaction(int image, String type, String time, String total, String paid){ // constructor for each transaction created by user
         this.image = image;
         this.type_of_transaction = type;
         this.time_done = time;
@@ -15,6 +15,7 @@ public class Transaction {
         this.paid = paid;
     }
 
+    // getters methods
     public int getImage(){
         return this.image;
     }

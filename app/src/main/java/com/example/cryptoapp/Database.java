@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
 
+    // columns for database
     public static final String ID = "ID";
     public static final String USER_TABLE = "USER_TABLE";
     public static final String USER_NAME = "USER_NAME";
@@ -24,6 +25,7 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
+    // creating SQLite database with the columns made
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableStatement = "CREATE TABLE " + USER_TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -38,6 +40,7 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // add user to the database
     public boolean addUser(UserModel userModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -58,6 +61,7 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    // check if the username and password parameters are a match to a user in the database
     public boolean checkUserCredentials(String username, String password){
         String [] cols = {ID};
         SQLiteDatabase db = getReadableDatabase();
@@ -73,6 +77,7 @@ public class Database extends SQLiteOpenHelper {
         else return false;
     }
 
+    // if the username is already in use
     public boolean ifUserExists(String username){
         String [] cols = {ID};
         SQLiteDatabase db = getReadableDatabase();

@@ -60,6 +60,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
 
+
+        // urls from the API to get the price and image of Bitcoin
         String url_for_price = "https://rest.coinapi.io/v1/assets";
         String url_for_image = "https://rest.coinapi.io/v1/assets/icons/128";
 
@@ -79,10 +81,11 @@ public class RecyclerViewActivity extends AppCompatActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 getBTC = jsonArray.getJSONObject(i).getString("asset_id");
 
+                                // find the symbol: "BTC" which matches for Bitcoin in the API response results
                                 if(getBTC.equalsIgnoreCase("BTC")){
-                                    JSONObject bitcoin = jsonArray.getJSONObject(i);
+                                    JSONObject bitcoin = jsonArray.getJSONObject(i); // the specific index in API response where bitcoin is
                                     System.out.println(bitcoin.toString());
-                                    priceCoin = (Double.valueOf(bitcoin.getString("price_usd")));
+                                    priceCoin = (Double.valueOf(bitcoin.getString("price_usd"))); // get the current price
                                     DecimalFormat changeDecimals = new DecimalFormat("##.00");
                                     System.out.println(priceCoin);
 
@@ -116,10 +119,12 @@ public class RecyclerViewActivity extends AppCompatActivity {
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 getBTC = jsonArray.getJSONObject(i).getString("asset_id");
 
+                                // find the index where the symbol is "BTC" to get Bitcoin
                                 if(getBTC.equalsIgnoreCase("BTC")){
                                     int indexofBTC = i;
                                     JSONObject bitcoin = jsonArray.getJSONObject(i);
-                                    String image_url = (bitcoin.getString("url"));
+                                    String image_url = (bitcoin.getString("url")); // get the image url of Bitcoin
+                                    // using Picasso to render and resize the image
                                     Picasso.get()
                                             .load(image_url)
                                             .resize(64, 64)
@@ -166,6 +171,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         }
     }
 
+    // When the user clicks the recyclerview tab on info of Bitcoin and send to the charts and holdings activity
     public void sendToChart(View view) {
         Intent chart_holdings = new Intent(this, Chart_and_HoldingsActivity.class);
         chart_holdings.putExtra("value_of_bitcoin", priceCoin);

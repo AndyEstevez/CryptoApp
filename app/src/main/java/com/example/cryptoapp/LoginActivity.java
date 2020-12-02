@@ -17,6 +17,8 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox cb_login;
     EditText et_username, et_password;
 
+    // used for shared preferences when the user has logged in
+    // and if they decided to stay logged in through the checkbox
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String stayLoggedIn = "loggedIn";
     public static final String loggedOnce = "loggedOnce";
@@ -40,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // checking if the login is successful or failed
                 String username = et_username.getText().toString().trim();
                 String password = et_password.getText().toString().trim();
                 boolean auth = db.checkUserCredentials(username, password);
@@ -47,9 +50,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(auth == true){
                     Toast.makeText(getBaseContext(), "Login Successful", Toast.LENGTH_LONG).show();
+                    // when the login is successful, check if the user decided to stay logged in when they reopen the app
                     if(cb_login.isChecked() == true){
                         editor.putBoolean(stayLoggedIn, cb_login.isChecked());
                     }
+                    // add to shared preferences and send back to main activity to see bitcoin pricing
                     editor.putBoolean(loggedOnce, true);
                     editor.putString(USER, username);
                     System.out.println(USER);
@@ -58,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
                 else{
+                    // the login was a failure
                     et_username.setText("");
                     et_password.setText("");
                     Toast.makeText(getBaseContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
@@ -69,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
+    // send to Register activity to create an account
     public void sendToRegister(View view) {
         Intent register = new Intent(this, RegisterActivity.class);
         startActivity(register);

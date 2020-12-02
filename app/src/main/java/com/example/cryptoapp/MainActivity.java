@@ -34,11 +34,14 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton mainButton = findViewById(R.id.main_button);
 
+        // checking the preferences for if the user decided to stay logged in
         final SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         final boolean checkLogin = preferences.getBoolean(stayLoggedIn, false);
         final boolean check1Login = preferences.getBoolean(loggedOnce, false);
         String username = preferences.getString(USER, null);
 
+        // this is for if user is logged in already when they open the app again,
+        // send to the price of Bitcoin
         if(checkLogin == true || check1Login == true){
             Intent gotoPortfolio = new Intent(this, RecyclerViewActivity.class);
             startActivity(gotoPortfolio);
@@ -53,14 +56,19 @@ public class MainActivity extends AppCompatActivity {
         mainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                // send to login activity if they are NOT signed in
                 if (check1Login == false) {
                     Intent goLogin = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(goLogin);
                 }
+
+                // send to the price of bitcoin if they are signed in
                 else if(checkLogin == true){
                     Intent gotoPortfolio = new Intent(MainActivity.this, RecyclerViewActivity.class);
                     startActivity(gotoPortfolio);
                 }
+
+                // send to the price of bitcoin if they are signed in
                 else if(check1Login == true){
                     Intent gotoPortfolio = new Intent(MainActivity.this, RecyclerViewActivity.class);
                     startActivity(gotoPortfolio);
@@ -89,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
 
         return super.onOptionsItemSelected(item);
     }
