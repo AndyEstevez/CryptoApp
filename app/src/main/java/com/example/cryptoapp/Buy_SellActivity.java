@@ -38,9 +38,12 @@ public class Buy_SellActivity extends AppCompatActivity {
         et_price_per_coin = findViewById(R.id.et_price_per_coin);
         et_date = findViewById(R.id.et_date);
 
+        // when the user clicks on saving a transaction they created
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // buy transaction
+                // send back to the holdings fragment with new transaction
                 if(btn_buy.isEnabled() == false) {
                     goBack = new Intent();
 
@@ -58,6 +61,8 @@ public class Buy_SellActivity extends AppCompatActivity {
                     finish();
                 }
 
+                // sell transaction
+                // send back to holdings fragment with new transaction
                 else if (btn_sell.isEnabled() == false){
                     goBack = new Intent();
 
@@ -80,11 +85,11 @@ public class Buy_SellActivity extends AppCompatActivity {
 
     }
 
+    // show the user which option they pick for the type of transaction they made
+    // buy or sell option
     public void buyOption(View view) {
         btn_buy.setEnabled(false);
         btn_sell.setEnabled(true);
-
-
     }
 
     public void sellOption(View view) {
@@ -92,6 +97,7 @@ public class Buy_SellActivity extends AppCompatActivity {
         btn_sell.setEnabled(false);
     }
 
+    // used for picking the date for when the transaction was made
     public void datePicker(View view) {
         final Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_MONTH);

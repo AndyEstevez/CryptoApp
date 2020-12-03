@@ -13,13 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 
-
+// used for handling the total
 public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.RecyclerViewHolder>{
 
     private ArrayList<Transaction> transactions;
     Context mContext;
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder{
+
+        // values needed for the holdings fragment for each transaction in the recyclerView
         public ImageView buy_sell_img;
         public TextView type_of_transaction;
         public TextView time;
@@ -51,6 +53,7 @@ public class HoldingsAdapter extends RecyclerView.Adapter<HoldingsAdapter.Recycl
         return recyclerViewHolder;
     }
 
+    // updating the recycler view
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         Transaction currentTransaction = transactions.get(position);
